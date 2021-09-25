@@ -44,16 +44,23 @@
 
 
 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+@   void zeros (uint32_t *vector, uint32_t longitud)
+@
 .thumb_func
 	asm_zero:
 		@ Registros usados
 		@ r2: valor cero
+		@ r1: cantidad de valores
+		@ r0: puntero al vector
 
 		mov r2, 0;		@ constante cero
 	.loop:
 		str r2,[r0, 4]!
-		subs r1,1
+		subs r1,1		@ con s actualizamos los flags
 		bne .loop
+
 		bx lr
 
 

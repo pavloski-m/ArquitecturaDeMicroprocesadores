@@ -6,6 +6,7 @@
 .global asm_sum
 .global asm_svc
 .global asm_zero
+.global asm_prod32
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
@@ -56,13 +57,33 @@
 		@ r0: puntero al vector
 
 		mov r2, 0;		@ constante cero
-	.loop:
+	.loop_z:
 		str r2,[r0, 4]!
 		subs r1,1		@ con s actualizamos los flags
-		bne .loop
+		bne .loop_z
 
 		bx lr
 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+@   void c_productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar)
+@
+.thumb_func
+	asm_prod32:
+		@ Registros usados
+		@ r3: escalar
+		@ r2: cantidad de valores
+		@ r1: puntero al vector Out
+		@ r0: puntero al vector In
+
+	.loop_mul:
+		ldr		r4,[r0],4	@ r4 = r0* ; r0*+4
+		mul		r6,r4,r3	@ R6 = r4 * r5
+		str		r6,[r1],4	@ r1* = r6 ; r1*+4
+		subs	r2,1		@ r2 = r2-1 con s actualizamos los flags
+		bne		.loop_mul	@ salta a loop c/ vez que z es 0.
+
+		bx lr
 
 
 

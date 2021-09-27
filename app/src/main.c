@@ -45,13 +45,31 @@ static void Suma (void)
     (void) SumResult_Asm;
 }
 
+
+
 static void Zeros (void){
 	uint32_t vectorEj1 [8] = {(uint32_t)-1,(uint32_t)-2,(uint32_t)-3,
 							  (uint32_t)-4,(uint32_t)-5,(uint32_t)-6,
 							  (uint32_t)-7,(uint32_t)-8};
 
+	c_zeros(vectorEj1, 8);
+
 	asm_zero(vectorEj1, 8);
 }
+
+
+static void prodEscalar32 (void)
+{
+	uint32_t vectorInEj2 [8] = { 5, 10, 15, 20, 25, 30, 35, 40};
+	uint32_t escalar = 50;
+	uint32_t vectorOutEj2 [8] = { 0, 0, 0, 0, 0, 0, 0, 0};
+	uint32_t longitud = 8;
+
+	//c_productoEscalar32(vectorInEj2, vectorOutEj2, longitud, escalar);
+
+	asm_prod32(vectorInEj2, vectorOutEj2, longitud, escalar);
+}
+
 
 static void LlamandoAMalloc (void)
 {
@@ -61,7 +79,6 @@ static void LlamandoAMalloc (void)
 
     (void) ptr;
 }
-
 
 static void PrivilegiosSVC (void)
 {
@@ -151,9 +168,11 @@ int main (void)
 {
     Inicio ();
 
-    //Suma ();
+    // Suma ();
 
-    Zeros();
+    // Zeros();
+
+    prodEscalar32();
 
     PrivilegiosSVC ();
 

@@ -63,13 +63,23 @@ static void prodEscalar32 (void)
 	uint32_t vectorInEj2 [8] = { 5, 10, 15, 20, 25, 30, 35, 40};
 	uint32_t escalar = 50;
 	uint32_t vectorOutEj2 [8] = { 0, 0, 0, 0, 0, 0, 0, 0};
-	uint32_t longitud = 8;
+	uint32_t longitud = sizeof(vectorInEj2) / sizeof(typeof(vectorInEj2[0]));
 
 	//c_productoEscalar32(vectorInEj2, vectorOutEj2, longitud, escalar);
 
 	asm_prod32(vectorInEj2, vectorOutEj2, longitud, escalar);
 }
 
+static void prodEscalar16 (void)
+{
+	uint16_t vectorInEj3 [8] = { 5, 10, 15, 20, 25, 30, 35, 40};
+	uint32_t escalar = 50;
+	uint16_t vectorOutEj3 [8] = { 0, 0, 0, 0, 0, 0, 0, 0};
+	uint16_t longitud = sizeof(vectorInEj3) / sizeof(typeof(vectorInEj3[0]));
+
+
+	asm_prod16(vectorInEj3, vectorOutEj3, longitud, escalar);
+}
 
 static void LlamandoAMalloc (void)
 {
@@ -172,7 +182,9 @@ int main (void)
 
     // Zeros();
 
-    prodEscalar32();
+    // prodEscalar32();
+
+    prodEscalar16();
 
     PrivilegiosSVC ();
 

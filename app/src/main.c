@@ -5,6 +5,14 @@
 #include <stdlib.h>
 #include <stdnoreturn.h>
 
+#define DWT_CONTROL             (*((volatile uint32_t*)0xE0001000))
+#define DWT_CYCCNT              (*((volatile uint32_t*)0xE0001004))
+#define DWT_CYCCNTENA_BIT       (1<<0)
+
+#define EnableCycleCounter()    DWT_CONTROL |= DWT_CYCCNTENA_BIT
+#define GetCycleCounter()       DWT_CYCCNT
+#define ResetCycleCounter()     DWT_CYCCNT = 0
+#define DisableCycleCounter()   DWT_CONTROL &= ~DWT_CYCCNTENA_BIT
 
 // Variable que se incrementa cada vez que se llama al handler de interrupcion
 // del SYSTICK.
@@ -71,14 +79,29 @@ static void prodEscalar32 (void)
 }
 
 static void prodEscalar16 (void)
-{
-	uint16_t vectorInEj3 [8] = { 5, 10, 15, 20, 25, 30, 35, 40};
-	uint32_t escalar = 50;
-	uint16_t vectorOutEj3 [8] = { 0, 0, 0, 0, 0, 0, 0, 0};
+{	uint32_t cycCountC;
+	uint32_t cycCountASM;
+
+	uint16_t vectorInEj3 [1000];
+	uint32_t escalar = 20;
+	uint16_t vectorOutEj3 [1000];
+
 	uint16_t longitud = sizeof(vectorInEj3) / sizeof(typeof(vectorInEj3[0]));
 
+	EnableCycleCounter();
+	ResetCycleCounter();
 
 	asm_prod16(vectorInEj3, vectorOutEj3, longitud, escalar);
+	cycCountASM = GetCycleCounter(); // da 9023 ciclos
+
+	ResetCycleCounter();
+
+	c_productoEscalar16 (vectorInEj3, vectorOutEj3, longitud, escalar);
+	cycCountC = GetCycleCounter(); // da 32079 ciclos
+
+	ResetCycleCounter();
+	DisableCycleCounter();
+
 }
 
 static void LlamandoAMalloc (void)

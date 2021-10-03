@@ -82,7 +82,7 @@
 	.loop_mul32:
 		ldr		r4,[r0],4	@ r4 = r0* ; r0*+4
 		mul		r4,r3		@ r4 = r4 * r5
-		str		r4,[r1],4	@ r1* = r6 ; r1*+4
+		str		r4,[r1],4	@ r1* = r4 ; r1*+4
 		subs	r2,1		@ r2 = r2-1 con s actualizamos los flags
 		bne		.loop_mul32	@ salta a loop c/ vez que z es 0.
 
@@ -107,9 +107,9 @@
 		push {r4}
 
 	.loop_mul16:
-		ldrh	r4,[r0],2	@ r4 = r0* ; r0*+4
-		mul		r4,r3	@ r4 = r4 * r5
-		str		r4,[r1],2	@ r1* = r6 ; r1*+4
+		ldrh	r4,[r0],2	@ r4 = r0* ; r0*+2
+		mul		r4,r3		@ r4 = r4 * r3
+		str		r4,[r1],2	@ r1* = r4 ; r1*+2
 		subs	r2,1		@ r2 = r2-1 con s actualizamos los flags
 		bne		.loop_mul16	@ salta a loop c/ vez que z es 0.
 

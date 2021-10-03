@@ -104,6 +104,33 @@ static void prodEscalar16 (void)
 
 }
 
+static void prodEscalar12 (void)
+{	uint32_t cycCountC;
+	uint32_t cycCountASM;
+
+	uint16_t vectorInEj4 [1000];
+	uint32_t escalar = 20;
+	uint16_t vectorOutEj4 [1000] = {0};
+
+
+	uint16_t longitud = sizeof(vectorInEj4) / sizeof(typeof(vectorInEj4[0]));
+
+	EnableCycleCounter();
+	ResetCycleCounter();
+
+	asm_prod12(vectorInEj4, vectorOutEj4, longitud, escalar);
+	cycCountASM = GetCycleCounter(); // da 9023 ciclos
+
+	ResetCycleCounter();
+
+	c_productoEscalar12 (vectorInEj4, vectorOutEj4, longitud, escalar);
+	cycCountC = GetCycleCounter(); // da 32079 ciclos
+
+	ResetCycleCounter();
+	DisableCycleCounter();
+
+}
+
 static void LlamandoAMalloc (void)
 {
     // De donde saca memoria malloc?
@@ -207,7 +234,10 @@ int main (void)
 
     // prodEscalar32();
 
-    prodEscalar16();
+    //prodEscalar16();
+
+    prodEscalar12();
+
 
     PrivilegiosSVC ();
 

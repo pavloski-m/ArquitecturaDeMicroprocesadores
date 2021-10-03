@@ -8,6 +8,7 @@
 .global asm_zero
 .global asm_prod32
 .global asm_prod16
+.global asm_prod12
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
@@ -109,7 +110,7 @@
 	.loop_mul16:
 		ldrh	r4,[r0],2	@ r4 = r0* ; r0*+2
 		mul		r4,r3		@ r4 = r4 * r3
-		str		r4,[r1],2	@ r1* = r4 ; r1*+2
+		strh	r4,[r1],2	@ r1* = r4 ; r1*+2
 		subs	r2,1		@ r2 = r2-1 con s actualizamos los flags
 		bne		.loop_mul16	@ salta a loop c/ vez que z es 0.
 
@@ -117,5 +118,31 @@
 
 		bx lr
 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+@   void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
+@
+.thumb_func
+	asm_prod12:
+		@ Registros usados
+		@ r3: escalar
+		@ r2: cantidad de valores
+		@ r1: puntero al vector Out
+		@ r0: puntero al vector In
 
+		push {r4}
+
+	.loop_mul12:
+		ldrh	r4,[r0],2	@ r4 = r0* ; r0*+2
+		mul		r4,r3		@ r4 = r4 * r3
+
+		usat	r4,12,r4	@ r4 = r4 & 0x0FFF
+
+		strh	r4,[r1],2	@ r1* = r4 ; r1*+2
+		subs	r2,1		@ r2 = r2-1 con s actualizamos los flags
+		bne		.loop_mul12	@ salta a loop c/ vez que z es 0.
+
+		pop {r4}
+
+		bx lr
 

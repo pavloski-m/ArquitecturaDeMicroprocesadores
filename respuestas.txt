@@ -1,0 +1,20 @@
+Respuesta de guía de preguntas de guía teórica
+
+Preguntas Orientadoras
+
+1 - Describa brevemente los diferentes perfiles de familias de microprocesadores/microcontroladores de ARM. Explique alguna de sus diferencias características.
+
+La familia de microcontroladores de ARM se pueden dividir en 3 grandes grupos:
+
+Procesadores ARM Clásicos (ARMx):  Estos procesadores son los más utilizados en desarrollos pequeños y simples. Tienen aceptable performance de proceso pero poca capacidad de memoria.
+Dentro de este grupo podemos encontrar diferentes familias de microcontroladores con su arquitectura particular, por ejemplo ARM7 con arquitectura ARMv4, ARM9 con ARMv5 y ARM11 con ARMv6.
+
+
+Procesadores Cortex Embebidos (Cortex Mx y Cortex Rx): 
+
+Los procesadores Cortex serie R son diseñados para aplicaciones en tiempo real. Estos proporcionan alta confiabilidad, tolerancia a fallas y respuesta en tiempo real. Se utilizan en sistemas en donde se requiere un alto rendimiento y los plazo de tiempo son importantes.
+Cortex-R → tienen arquitectura ARMv7-R.
+
+En cambio los Cortex serie M con menores prestaciones son opciones mas económicas para aplicaciones deterministas y tienen perfil de microcontrolador. Estos procesadores son eficientes energeticamente, fáciles de implementar y son principalmente desarrollados para aplicaciones embebidas avanzadas.
+Cortex-M → tienen arquitectura ARMv7-M.
+

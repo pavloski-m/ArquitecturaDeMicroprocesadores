@@ -1,6 +1,6 @@
 Respuesta de guía de preguntas de guía teórica
 
-Preguntas Orientadoras
+==================Preguntas Orientadoras======================
 
 1 - Describa brevemente los diferentes perfiles de familias de microprocesadores/microcontroladores de ARM. Explique alguna de sus diferencias características.
 
@@ -16,5 +16,15 @@ Los procesadores Cortex serie R son diseñados para aplicaciones en tiempo real.
 Cortex-R → tienen arquitectura ARMv7-R.
 
 En cambio los Cortex serie M con menores prestaciones son opciones mas económicas para aplicaciones deterministas y tienen perfil de microcontrolador. Estos procesadores son eficientes energeticamente, fáciles de implementar y son principalmente desarrollados para aplicaciones embebidas avanzadas.
-Cortex-M → tienen arquitectura ARMv7-M.
+Cortex-M → tienen arquitectura ARMv6-M y ARMv7-M.
 
+=======================Cortex-M===============================
+
+1. Describa brevemente las diferencias entre las familias de procesadores Cortex M0, M3 y M4.
+
+Los microprocesadores Cortex-M0 y Cortex-M0+ tienen arquitectura ARMv6-M en cambio los Cortex M3 y M4 tienen arquitectura ARMv7-M
+Los microprocesadores M0 estan diseñados para procesamiento general de datos, alta pérformance en control de I/O, señales mixtas ASICs y son reemplazo de los MCUs de 8/16 bits
+
+Los Cortex-M3 tienen alta performance en procesamiento de dato y control de I/O, agrega instrucciones para realizar tareas complejas. Incluye instrucciones de división y multiplicación y ademas un módulo de debug para depurar el software.
+
+Los Cortex-M4 son similares a los Cortex-M3 con el agregado de instrucciones de procesamiento de señales (DSP).

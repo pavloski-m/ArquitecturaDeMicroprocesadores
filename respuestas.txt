@@ -28,3 +28,46 @@ Los microprocesadores M0 estan diseñados para procesamiento general de datos, a
 Los Cortex-M3 tienen alta performance en procesamiento de dato y control de I/O, agrega instrucciones para realizar tareas complejas. Incluye instrucciones de división y multiplicación y ademas un módulo de debug para depurar el software.
 
 Los Cortex-M4 son similares a los Cortex-M3 con el agregado de instrucciones de procesamiento de señales (DSP).
+
+
+2. ¿Por qué se dice que el set de instrucciones Thumb permite mayor densidad de código? Explique
+El set estandar de instrucciones de ARM es de 32 bits, los procesadores nuevos (desde el ARM7) en adelante, poseen un set reducido de instrucciones de 16 bits, que contiene las instrucciones mas habituales. Esto permite que se pueda escribir mas instrucciones en menor memoria de programa. Lo que se puede escribir en Thumb puede escribirse en set ARM pero no al revés.
+
+
+3. ¿Qué entiende por arquitectura load-store? ¿Qué tipo de instrucciones no posee este tipo de arquitectura?
+La arquitectura Load-Store opera a través de los registros, ya que estos tienen una velocidad de lectura y escritura mayor a la de la memoria. Se busca disminuir la frecuencia de acceso a la memoria . Por lo tanto la única manera de acceder a la memoría es a través de los registros, para leerla se carga (load) un registro y para escribirla se guarda (store) desde un registro.
+Este tipo de arquitectura no posee instrucciones entre datos directos a memoria, por ejemplo MOV [direccionMemoria1], [direccionMemoria2]
+
+4. ¿Cómo es el mapa de memoria de la familia?
+Los microcontroladores de ARM no vienen con una cantidad de memoria establecida, la decisión de esto se delega a los fabricantes que los implementan. En lugar de esto se provee de bus de acceso a memoria y un mapa de memoria esablecido de 4Gb.
+Este mapa de 4Gb se describen a continuación:
+* 0x00000000 - 0x1FFFFFFF: (512 Mb) (Código) Es el espacio de memoria designado al código de programa. Esta área también permite acceso de datos.
+* 0x20000000 - 0x3FFFFFFF: (512 Mb) (SRAM) Este espacio esta designado a la conexión de memoria RAM estática (SRAM), tiene una porción direccionable por bit y puede ejecturase código de programa desde esta regíon.
+* 0x40000000 - 0x5FFFFFFF: (512 Mb) (Periféricos) Es utilizado mayormente para los periféricos del chip. El primer Mb puede ser direccionable bit a bit.
+* 0x60000000 - 0x9FFFFFFF: (512 Mb + 512 Mb) (RAM) Este Gb va a poder usarse para almacenamiento como para código de programa.
+* 0xA0000000 - 0xDFFFFFFF: (512 Mb + 512 Mb) (Dispositivos) Este Gb se usa para otros periféricos como por ejemplo los periféricos ajenos al chip.
+* 0xE0000000 - 0xFFFFFFFF: (512 Mb) (Sistema) - Esta región está compuesta de varios bloques:
+			0xE0000000 to 0xE003FFFF - Internal Private Peripheral Bus (IPPB)
+			0xE0040000 to 0xE00FFFFF - External Private Peripheral Bus (EPPB)
+			0xE0100000 to 0xFFFFFFFF - Para uso específico del fabricante.
+			
+			
+5. ¿Qué ventajas presenta el uso de los “shadowed pointers” del PSP y el MSP?
+Tener dos Stack Pointers separados permite al sistema ser mas robusto y seguro. Generalmente se le da el control del Main Stack Pointer (MSP) al proceso crítico, como ser el sistema operativo, y el Prosses Stack Pointer (PSP) a la aplicación.
+
+Este tipo de arreglo tiene muchos beneficios:
+* Si un problema de una tarea de la aplicación corrompe el PSP, el sistema operativo usa la información del MSP y puede seguir su curso sin errores.
+* Cada tarea utiliza tanto espacio como saltos anidados posea, ya que el las interrupciones anidadas se manejan en el MSP
+* Facilita la creación de un OS eficiente para los procesadores Cortex.
+
+6. Describa los diferentes modos de privilegio y operación del Cortex M, sus relaciones y como se conmuta de uno al otro. Describa un ejemplo en el que se pasa del modo
+privilegiado a no priviligiado y nuevamente a privilegiado.
+
+
+
+
+
+
+
+
+

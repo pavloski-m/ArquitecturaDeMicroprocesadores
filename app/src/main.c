@@ -105,11 +105,14 @@ static void prodEscalar16 (void)
 }
 
 static void prodEscalar12 (void)
-{	uint32_t cycCountC;
-	uint32_t cycCountASM;
+{	volatile uint32_t cycCountC;
+	volatile uint32_t cycCountASM;
 
 	uint16_t vectorInEj4 [1000];
-	uint32_t escalar = 20;
+	for (int i=0; i<1000; i++){
+		vectorInEj4[i] = 0xFF00;
+	}
+	uint32_t escalar = 0xFFFF;
 	uint16_t vectorOutEj4 [1000] = {0};
 
 

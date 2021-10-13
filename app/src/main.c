@@ -195,6 +195,17 @@ static void downsampleM(void){
 
 
 static void invertir(void){
+	uint16_t vectorInEj9 [1000];
+
+	for (int i=0; i<1000; i++){
+		vectorInEj9[i] = 0xFF00;
+	}
+
+	uint32_t longitud = sizeof(vectorInEj9) / sizeof(typeof(vectorInEj9[0]));
+
+	c_invertir (vectorInEj9, longitud);
+
+	asm_invertir (vectorInEj9, longitud);
 
 }
 
@@ -306,7 +317,7 @@ int main (void)
 
     //prodEscalar12();
 
-    filtroVentana10();
+    //filtroVentana10();
 
     //pack32to16();
 
@@ -314,7 +325,7 @@ int main (void)
 
 	//downsampleM();
 
-	//invertir();
+	invertir();
 
 
 	PrivilegiosSVC ();

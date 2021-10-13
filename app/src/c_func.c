@@ -84,6 +84,12 @@ void c_downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, 
 
 
 void c_invertir (uint16_t * vector, uint32_t longitud){
+	uint16_t aux=0;
 
+	for(uint32_t i=0; i<longitud/2; i++){
+		aux = vector[i];
+		vector[i] = vector[longitud+1-i];
+		vector[longitud+1-i] = aux;
+	}
 }
 

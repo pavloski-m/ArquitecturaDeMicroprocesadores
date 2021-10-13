@@ -12,6 +12,7 @@
 .global asm_vent10
 .global asm_pack32to16
 .global asm_max
+.global asm_invertir
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
@@ -252,5 +253,40 @@
 		bx		lr
 
 
+
+.thumb_func
+	asm_invertir:
+		@ Registros usados
+		@ r1: longitud del vector
+		@ r0: puntero al vector
+		@===============
+		@ r2: auxiliar
+		@ r3: indice para salir de bucle
+		@ r4: auxiliar2
+
+		push 	{r4}
+
+		mov 	r3,r1		@ guardo la longitud para poder usar en el bucle de salida
+		sub		r3,#02		@ resto un valor para poder usar la comparación pl al final del ciclo
+		mov 	r2,#00		@ inicializo el auxiliar en 0
+		sub 	r1,#02		@ decremento la longitud para el primer salto a [longitud-1]
+
+	.loop_vector:
+		ldrh	r2,[r0]		@ almaceno el valor del vector en el auxiliar y sumo la long restante
+		add		r0,r1		@ sumo la long restante
+		ldrh	r4,[r0]		@ almaceno el valor final del vector en aux2
+
+		strh	r2,[r0]		@ almaceno desde el final
+		sub 	r0,r1		@ vuelvo con el puntero al principio
+		strh	r4,[r0],2	@ almaceno aux2 al principio e incremento el puntero
+
+		sub		r1,#04		@ resto la long del vetor para el salto. 4 porque me acerco 2 valores
+
+		subs 	r3,#04		@ resto el indice en 2 ya que se modificaron 2 valores.
+		bpl	.loop_vector	@ si es positivo o cero salto vuelvo al loop
+
+		pop 	{r4}		@ devuelvo el contexto
+
+		bx		lr			@ salgo de la función
 
 

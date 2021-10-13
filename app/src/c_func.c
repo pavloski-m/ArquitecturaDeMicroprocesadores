@@ -93,3 +93,14 @@ void c_invertir (uint16_t * vector, uint32_t longitud){
 	}
 }
 
+
+void c_eco (int16_t * Entrada, uint32_t longitud){
+
+	uint32_t desfasaje = 882;
+
+	for (uint32_t i = 0; i< longitud; i++){
+		if (i+desfasaje < longitud){
+			Entrada[i+desfasaje] += Entrada[i]/2;
+		}
+	}
+}

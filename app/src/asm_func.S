@@ -9,6 +9,7 @@
 .global asm_prod32
 .global asm_prod16
 .global asm_prod12
+.global asm_vent10
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
@@ -145,4 +146,77 @@
 		pop {r4}
 
 		bx lr
+
+
+.thumb_func
+	asm_vent10:
+		@ Registros usados
+		@ r2: longitud del vector
+		@ r1: puntero al vector Out
+		@ r0: puntero al vector In
+		@===============
+		@ r3: acumulador
+		@ r4: indice
+		@ r5: auxiliar out
+		@ r6: auxiliar in
+		@ r7: constante 10 para dividir en bucle general
+
+		push {r4-r7}
+
+		mov 	r4,#00		@ r4=0
+		mov		r3,#00		@ r3=0
+
+	.loop_init:				@ bloque de inicio
+		ldr		r6,[r0],2	@ r6 = *r0 ;  r0+=2
+
+		add		r3,r3,r6	@ r3+=r6 sumo el valor leído al acumulador
+
+		add		r4,1		@ incremento el indice por el que voy a dividir
+
+		sdiv	r5,r3,r4	@ r5 = r3 / r4  =>
+
+		str 	r5,[r1],2 // *r1 = r0; r1-=4 cargo al vector de salida
+
+		cmp		r4,#10		@ condicion de salida:  i=10
+		bne .loop_init
+
+	.loop_gral:
+
+		ldr		r6,[r0],-20	@ r6 = *r0 ;  r0+=vuelvo 10 indices atras
+
+		add		r3,r3,r6	@ r3+=r6 sumo el nuevo valor que entra en la ventana al acumulador
+
+		ldr		r6,[r0],+22	@
+
+		sub		r3,r3,r6	@ acumulado menos el valor de la entrada que ya no entra en la ventana
+
+		add		r4,1		@ incremento el índice
+
+		sdiv	r5, r3, r7	@ divido
+
+		str		r5,[r1],2
+
+		cmp		r4,r2
+		bne	.loop_gral
+
+		pop 	{r4-r7}
+
+		bx		lr
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

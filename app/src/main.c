@@ -134,6 +134,18 @@ static void prodEscalar12 (void)
 
 }
 
+static void filtroVentana10 (void){
+	uint16_t vectorInEj5 [1000];
+
+	for (int i=0; i<1000; i++){
+		vectorInEj5[i] = 0xFF00;
+	}
+
+	uint16_t vectorOutEj4 [1000] = {0};
+
+	uint16_t longitud = sizeof(vectorInEj5) / sizeof(typeof(vectorInEj5[0]));
+}
+
 static void LlamandoAMalloc (void)
 {
     // De donde saca memoria malloc?
@@ -239,7 +251,9 @@ int main (void)
 
     //prodEscalar16();
 
-    prodEscalar12();
+    //prodEscalar12();
+
+    filtroVentana10();
 
 
     PrivilegiosSVC ();

@@ -10,6 +10,7 @@
 .global asm_prod16
 .global asm_prod12
 .global asm_vent10
+.global asm_pack32to16
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
@@ -167,7 +168,7 @@
 		mov		r3,#00		@ r3=0
 
 	.loop_init:				@ bloque de inicio
-		ldr		r6,[r0],2	@ r6 = *r0 ;  r0+=2
+		ldrh	r6,[r0],2	@ r6 = *r0 ;  r0+=2
 
 		add		r3,r3,r6	@ r3+=r6 sumo el valor leído al acumulador
 
@@ -175,14 +176,14 @@
 
 		sdiv	r5,r3,r4	@ r5 = r3 / r4  =>
 
-		str 	r5,[r1],2 // *r1 = r0; r1-=4 cargo al vector de salida
+		strh 	r5,[r1],2 // *r1 = r0; r1-=4 cargo al vector de salida
 
 		cmp		r4,#10		@ condicion de salida:  i=10
 		bne .loop_init
 
 	.loop_gral:
 
-		ldr		r6,[r0],-20	@ r6 = *r0 ;  r0+=vuelvo 10 indices atras
+		ldrh	r6,[r0],-20	@ r6 = *r0 ;  r0+=vuelvo 10 indices atras
 
 		add		r3,r3,r6	@ r3+=r6 sumo el nuevo valor que entra en la ventana al acumulador
 
@@ -194,24 +195,36 @@
 
 		sdiv	r5, r3, r7	@ divido
 
-		str		r5,[r1],2
+		strh	r5,[r1],2	@ almaceno el valor promediado  en r5 en la memoria
 
-		cmp		r4,r2
+		cmp		r4,r2		@ comparo si el indice llega al tamaño de la longitud del vector
 		bne	.loop_gral
 
-		pop 	{r4-r7}
+		pop 	{r4-r7}		@ vuelvo a cargar los registros con los valores que tenían antes de la función
+
+		bx		lr			@ retorno de la función
+
+
+
+.thumb_func
+	asm_pack32to16:
+		@ Registros usados
+		@ r2: longitud del vector
+		@ r1: puntero al vector Out
+		@ r0: puntero al vector In
+		@===============
+
+		mov		r3,#00
+		add		r0,2		@ hago un desfasaje del vector
+
+	.loop_32to16:
+		ldrh	r2,[r0],4
+		strh	r2,[r1],2
+		add		r3,1
+		cmp		r3,r2		@ comparo si el indice llega al tamaño de la longitud del vector
+		bne	.loop_32to16
 
 		bx		lr
-
-
-
-
-
-
-
-
-
-
 
 
 

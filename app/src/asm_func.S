@@ -11,6 +11,7 @@
 .global asm_prod12
 .global asm_vent10
 .global asm_pack32to16
+.global asm_max
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
@@ -228,7 +229,27 @@
 
 
 
+.thumb_func
+	asm_max:
+		@ Registros usados
+		@ r1: longitud del vector
+		@ r0: puntero al vector In
+		@===============
+		@ r2: almaceno max value
+		@ r3: variable auxiliar
 
+		mov		r3,#00
+	.loop_max:
+		ldr		r3,[r0],4
+		cmp		r2,r3
+		bge		.loop_notmax
+		mov		r3,r2
+	.loop_notmax:
+		subs	r1,#1
+		bne		.loop_max
+
+		str		r2,[r0]
+		bx		lr
 
 
 

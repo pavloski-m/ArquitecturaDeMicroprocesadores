@@ -156,22 +156,35 @@ static void filtroVentana10 (void){
 
 static void pack32to16(void){
 
-	uint16_t vectorInEj5 [1000];
+	int32_t vectorInEj6 [1000];
 
 	for (int i=0; i<1000; i++){
-		vectorInEj5[i] = 0xFF00;
+		vectorInEj6[i] = 0xFF00;
 	}
 
-	uint16_t vectorOutEj5 [1000] = {0};
+	int16_t vectorOutEj6 [1000] = {0};
 
-	uint16_t longitud = sizeof(vectorInEj5) / sizeof(typeof(vectorInEj5[0]));
+	uint32_t longitud = sizeof(vectorInEj6) / sizeof(typeof(vectorInEj6[0]));
 
+	c_pack32to16 (vectorInEj6, vectorOutEj6, longitud);
 
+	asm_pack32to16 (vectorInEj6, vectorOutEj6, longitud);
 
 }
 
 
 static void max(void){
+	int32_t vectorInEj7 [1000];
+
+	for (int i=0; i<1000; i++){
+		vectorInEj7[i] = 0xFF00;
+	}
+
+	uint32_t longitud = sizeof(vectorInEj7) / sizeof(typeof(vectorInEj7[0]));
+
+	c_max (vectorInEj7, longitud);
+
+	asm_max (vectorInEj7, longitud);
 
 }
 

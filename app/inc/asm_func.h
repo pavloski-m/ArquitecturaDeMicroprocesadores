@@ -11,3 +11,4 @@ extern void asm_prod16 (uint16_t * vectorIn, uint16_t * vectorOut, uint16_t long
 extern void asm_prod12 (uint16_t * vectorIn, uint16_t * vectorOut, uint16_t longitud, uint32_t escalar);
 extern void asm_vent10 (uint16_t* vectorIn, uint16_t* vectorOut, uint32_t longitudVectorIn);
 extern void asm_pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
+extern void asm_max (int32_t * vectorIn, uint32_t longitud);

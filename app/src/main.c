@@ -148,7 +148,7 @@ static void filtroVentana10 (void){
 
 	c_filtroVentana10 (vectorInEj5, vectorOutEj5, longitud);
 
-	//asm_vent10 (vectorInEj5, vectorOutEj5, longitud);
+	asm_vent10 (vectorInEj5, vectorOutEj5, longitud);
 
 
 }
@@ -210,6 +210,15 @@ static void invertir(void){
 }
 
 static void eco (void){
+
+#define LARGO_MUESTRAS 4096
+
+	uint16_t vectorInEj10 [LARGO_MUESTRAS];
+
+	for (int i=0; i<LARGO_MUESTRAS; i++){
+			vectorInEj10[i] = i%20;
+		}
+
 
 }
 
@@ -320,7 +329,7 @@ int main (void)
 
     //prodEscalar12();
 
-    filtroVentana10();
+    //filtroVentana10();
 
     //pack32to16();
 

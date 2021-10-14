@@ -139,7 +139,7 @@ static void filtroVentana10 (void){
 	uint16_t vectorInEj5 [1000];
 
 	for (int i=0; i<1000; i++){
-		vectorInEj5[i] = 0xFF00;
+		vectorInEj5[i] = i%20;
 	}
 
 	uint16_t vectorOutEj5 [1000] = {0};
@@ -148,7 +148,7 @@ static void filtroVentana10 (void){
 
 	c_filtroVentana10 (vectorInEj5, vectorOutEj5, longitud);
 
-	asm_vent10 (vectorInEj5, vectorOutEj5, longitud);
+	//asm_vent10 (vectorInEj5, vectorOutEj5, longitud);
 
 
 }
@@ -209,6 +209,9 @@ static void invertir(void){
 
 }
 
+static void eco (void){
+
+}
 
 static void LlamandoAMalloc (void)
 {
@@ -317,7 +320,7 @@ int main (void)
 
     //prodEscalar12();
 
-    //filtroVentana10();
+    filtroVentana10();
 
     //pack32to16();
 
@@ -325,8 +328,9 @@ int main (void)
 
 	//downsampleM();
 
-	invertir();
+	//invertir();
 
+    // eco();
 
 	PrivilegiosSVC ();
 

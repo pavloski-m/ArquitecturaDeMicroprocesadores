@@ -13,7 +13,7 @@
 .global asm_pack32to16
 .global asm_max
 .global asm_invertir
-
+.global asm_eco
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
 @   uint32_t asmSum (uint32_t firstOperand, uint32_t secondOperand)
@@ -171,34 +171,21 @@
 
 	.loop_init:				@ bloque de inicio
 		ldrh	r6,[r0],2	@ r6 = *r0 ;  r0+=2
-
 		add		r3,r3,r6	@ r3+=r6 sumo el valor leído al acumulador
-
 		add		r4,1		@ incremento el indice por el que voy a dividir
-
-		sdiv	r5,r3,r4	@ r5 = r3 / r4  =>
-
+		udiv	r5,r3,r4	@ r5 = r3 / r4  =>
 		strh 	r5,[r1],2 // *r1 = r0; r1-=4 cargo al vector de salida
-
 		cmp		r4,#10		@ condicion de salida:  i=10
 		bne .loop_init
 
 	.loop_gral:
-
 		ldrh	r6,[r0],-20	@ r6 = *r0 ;  r0+=vuelvo 10 indices atras
-
 		add		r3,r3,r6	@ r3+=r6 sumo el nuevo valor que entra en la ventana al acumulador
-
-		ldr		r6,[r0],+22	@
-
+		ldrh	r6,[r0],+22	@
 		sub		r3,r3,r6	@ acumulado menos el valor de la entrada que ya no entra en la ventana
-
 		add		r4,1		@ incremento el índice
-
-		sdiv	r5, r3, r7	@ divido
-
+		udiv	r5, r3, r7	@ divido
 		strh	r5,[r1],2	@ almaceno el valor promediado  en r5 en la memoria
-
 		cmp		r4,r2		@ comparo si el indice llega al tamaño de la longitud del vector
 		bne	.loop_gral
 
@@ -288,5 +275,22 @@
 		pop 	{r4}		@ devuelvo el contexto
 
 		bx		lr			@ salgo de la función
+
+
+.thumb_func
+	asm_eco:
+		@ Registros usados
+		@ r1: longitud del vector
+		@ r0: puntero al vector
+		@===============
+		@ r2:
+		@ r3:
+		@ r4:
+
+
+
+
+
+
 
 

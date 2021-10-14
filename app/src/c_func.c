@@ -39,13 +39,13 @@ void c_productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint16_t lo
 void c_filtroVentana10 (uint16_t* vectorIn, uint16_t* vectorOut, uint32_t longitudVectorIn){
 	uint32_t acumAux = 0;
 	uint32_t i=0;
-	while( i < longitudVectorIn + 9){
+	while( i < longitudVectorIn){
 		if(i<9){
 			acumAux += vectorIn[i];
 			vectorOut[i] = acumAux/(i+1);
 		}
 		else{
-			acumAux +=vectorIn[i]-vectorIn[i-10];
+			acumAux +=(vectorIn[i]-vectorIn[i-10]);
 			vectorOut[i] = acumAux/10;
 	}
 		i++;

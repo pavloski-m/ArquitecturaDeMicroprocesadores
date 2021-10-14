@@ -228,17 +228,17 @@
 		@ r2: almaceno max value
 		@ r3: variable auxiliar
 
-		mov		r3,#00
+		mov		r2,#00
 	.loop_max:
 		ldr		r3,[r0],4
 		cmp		r2,r3
 		bge		.loop_notmax
-		mov		r3,r2
+		mov		r2,r3
 	.loop_notmax:
 		subs	r1,#1
 		bne		.loop_max
 
-		str		r2,[r0]
+		mov		r0,r2
 		bx		lr
 
 
@@ -255,23 +255,26 @@
 
 		push 	{r4}
 
+
 		mov 	r3,r1		@ guardo la longitud para poder usar en el bucle de salida
-		sub		r3,#02		@ resto un valor para poder usar la comparación pl al final del ciclo
+		sub		r3,#01		@ resto un valor para poder usar la comparación pl al final del ciclo
 		mov 	r2,#00		@ inicializo el auxiliar en 0
-		sub 	r1,#02		@ decremento la longitud para el primer salto a [longitud-1]
+		sub 	r1,#01		@ decremento la longitud para el primer salto a [longitud-1]
 
 	.loop_vector:
-		ldrh	r2,[r0]		@ almaceno el valor del vector en el auxiliar y sumo la long restante
+		ldrh	r2,[r0]		@ almaceno el valor del vector en el auxiliar
 		add		r0,r1		@ sumo la long restante
+		add 	r0,r1		@PROVISORIO
 		ldrh	r4,[r0]		@ almaceno el valor final del vector en aux2
 
 		strh	r2,[r0]		@ almaceno desde el final
 		sub 	r0,r1		@ vuelvo con el puntero al principio
+		sub		r0,r1		@provisorio
 		strh	r4,[r0],2	@ almaceno aux2 al principio e incremento el puntero
 
-		sub		r1,#04		@ resto la long del vetor para el salto. 4 porque me acerco 2 valores
+		sub		r1,#02		@ resto la long del vetor para el salto. 4 porque me acerco 2 valores
 
-		subs 	r3,#04		@ resto el indice en 2 ya que se modificaron 2 valores.
+		subs 	r3,#02		@ resto el indice en 2 ya que se modificaron 2 valores.
 		bpl	.loop_vector	@ si es positivo o cero salto vuelvo al loop
 
 		pop 	{r4}		@ devuelvo el contexto

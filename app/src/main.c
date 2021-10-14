@@ -159,7 +159,7 @@ static void pack32to16(void){
 	int32_t vectorInEj6 [1000];
 
 	for (int i=0; i<1000; i++){
-		vectorInEj6[i] = 0xFF00;
+		vectorInEj6[i] = 1856231;
 	}
 
 	int16_t vectorOutEj6 [1000] = {0};
@@ -175,16 +175,18 @@ static void pack32to16(void){
 
 static void max(void){
 	int32_t vectorInEj7 [1000];
+	int32_t	max_c = 0;
+	int32_t max_asm = 0;
 
 	for (int i=0; i<1000; i++){
-		vectorInEj7[i] = 0xFF00;
+		vectorInEj7[i] = i%67;
 	}
 
 	uint32_t longitud = sizeof(vectorInEj7) / sizeof(typeof(vectorInEj7[0]));
 
-	c_max (vectorInEj7, longitud);
+	max_c = c_max (vectorInEj7, longitud);
 
-	asm_max (vectorInEj7, longitud);
+	max_asm = asm_max (vectorInEj7, longitud);
 
 }
 
@@ -198,7 +200,7 @@ static void invertir(void){
 	uint16_t vectorInEj9 [1000];
 
 	for (int i=0; i<1000; i++){
-		vectorInEj9[i] = 0xFF00;
+		vectorInEj9[i] = i;
 	}
 
 	uint32_t longitud = sizeof(vectorInEj9) / sizeof(typeof(vectorInEj9[0]));
@@ -329,7 +331,7 @@ int main (void)
 
     //prodEscalar12();
 
-    filtroVentana10();
+    //filtroVentana10();
 
     //pack32to16();
 
@@ -337,7 +339,7 @@ int main (void)
 
 	//downsampleM();
 
-	//invertir();
+	invertir();
 
     // eco();
 

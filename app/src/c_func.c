@@ -53,18 +53,18 @@ void c_filtroVentana10 (uint16_t* vectorIn, uint16_t* vectorOut, uint32_t longit
 }
 
 
-void c_pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud){
+void c_pack32to16 (int32_t *vectorIn, int16_t *vectorOut, uint32_t longitud){
 
 	int32_t aux = 0;
 
 	for( uint32_t i = 0; i<longitud; i++ ){
-				 aux = vectorIn[i]>>16;
+				 aux = vectorIn[i]/65536;
 		vectorOut[i] = (int16_t) aux;
 	}
 }
 
 
-int32_t c_max (int32_t * vectorIn, uint32_t longitud){
+int32_t c_max (int32_t *vectorIn, uint32_t longitud){
 
 	int32_t max_value = 0;
 
@@ -88,8 +88,8 @@ void c_invertir (uint16_t * vector, uint32_t longitud){
 
 	for(uint32_t i=0; i<longitud/2; i++){
 		aux = vector[i];
-		vector[i] = vector[longitud+1-i];
-		vector[longitud+1-i] = aux;
+		vector[i] = vector[longitud-i-1];
+		vector[longitud-i-1] = aux;
 	}
 }
 

@@ -166,8 +166,9 @@
 
 		push {r4-r7}
 
-		mov 	r4,0		@ r4=0
-		mov		r3,0		@ r3=0
+		mov 	r4,#0		@ r4=0
+		mov		r3,#0		@ r3=0
+		mov		r7,#10		@ r7=0
 
 	.loop_init:				@ bloque de inicio
 		ldrh	r6,[r0],2	@ r6 = *r0 ;  r0+=2
@@ -175,9 +176,8 @@
 		add		r4,1		@ incremento el indice por el que voy a dividir
 		udiv	r5,r3,r4	@ r5 = r3 / r4  =>
 
-		strh 	r5,[r1],2 	@ *r1 = r0; r1-=4 cargo al vector de salida
+		strh 	r5,[r1],2 	@ *r1 = r5; r1-=4 cargo al vector de salida
 		cmp		r4,#10		@ condicion de salida:  i=10
-
 		bne .loop_init
 
 	.loop_gral:
@@ -290,21 +290,21 @@
 		@ r4:
 
 
-		mov		r2,441  	@ como voy a leer de a 2 datos el desfasaje es 441 en vez de 882
-		mov		r4,0
+@		mov		r2,441  	@ como voy a leer de a 2 datos el desfasaje es 441 en vez de 882
+@		mov		r4,0
 
-	.loop_init
-		ldr  	r3,[r0]
-		mov		r1,r3		@ paso los primeros valores de que no tienen eco
-		subs	r2,1		@ decremento para ver si termino el espacio sin eco
-		bne		.loop_init
+@	.loop_init
+@		ldr  	r3,[r0]
+@		mov		r1,r3		@ paso los primeros valores de que no tienen eco
+@		subs	r2,1		@ decremento para ver si termino el espacio sin eco
+@		bne		.loop_init
 
-		mov		r2,441		@ vuelvo a cargar para el desfasaje
+@		mov		r2,441		@ vuelvo a cargar para el desfasaje
 
-	.loop_eco
-		ldr		r3,[r0]		@ cargo el valor siguiente del vector
-		shadd16	r3,r3,r4	@ sumo con SIMD con un registro en 0
-		str		r3,[r0]
+@	.loop_eco
+@		ldr		r3,[r0]		@ cargo el valor siguiente del vector
+@		shadd16	r3,r3,r4	@ sumo con SIMD con un registro en 0
+@		str		r3,[r0]
 
 							@ tengo que comparar un indice para ver cuando termina el vector
 							@ aca me doy cuenta de que tengo que hacer otro vector de salida para que no se realimente el eco

@@ -146,7 +146,7 @@ static void filtroVentana10 (void){
 
 	uint16_t longitud = sizeof(vectorInEj5) / sizeof(typeof(vectorInEj5[0]));
 
-	c_filtroVentana10 (vectorInEj5, vectorOutEj5, longitud);
+	//c_filtroVentana10 (vectorInEj5, vectorOutEj5, longitud);
 
 	asm_vent10 (vectorInEj5, vectorOutEj5, longitud);
 
@@ -329,7 +329,7 @@ int main (void)
 
     //prodEscalar12();
 
-    //filtroVentana10();
+    filtroVentana10();
 
     //pack32to16();
 

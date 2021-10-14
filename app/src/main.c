@@ -221,6 +221,11 @@ static void eco (void){
 			vectorInEj10[i] = i%20;
 		}
 
+	int16_t vectorOutEj10 [1000] = {0};
+
+	c_eco (vectorInEj10, vectorOutEj10, LARGO_MUESTRAS);
+
+	asm_eco_SIMD (vectorInEj10, vectorOutEj10, LARGO_MUESTRAS);
 
 }
 
@@ -339,9 +344,9 @@ int main (void)
 
 	//downsampleM();
 
-	invertir();
+	//invertir();
 
-    // eco();
+    eco();
 
 	PrivilegiosSVC ();
 

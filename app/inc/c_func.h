@@ -23,4 +23,4 @@ void c_downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, 
 
 void c_invertir (uint16_t * vector, uint32_t longitud);
 
-void c_eco (int16_t * Entrada, uint32_t longitud);
+void c_eco (int16_t * vectorIn, int16_t * vectorOut, uint32_t longitud);

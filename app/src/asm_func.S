@@ -285,31 +285,39 @@
 .thumb_func
 	asm_eco_SIMD:
 		@ Registros usados
-		@ r1: longitud del vector
-		@ r0: puntero al vector
+		@ r1: puntero al vector de salida
+		@ r0: puntero al vector entrada
+		@ r2: longitud del vector
 		@===============
-		@ r2: constante de desfasaje de tiempo
-		@ r3: aux
-		@ r4:
+		@ r3: aux puntero 1
+		@ r4: constante de desfasaje de tiempo
+		@ r5: constante con valor 0 - para la división con SIMD
+		@ r6: aux puntero 2
 
+		push    {r4-r6}
 
-@		mov		r2,441  	@ como voy a leer de a 2 datos el desfasaje es 441 en vez de 882
-@		mov		r4,0
+		mov		r4,#441  	@ cargo el tamaño del tramo sin eco (20 ms = 882 muestras) , como se lee de a 2 se pone la mitad
+		mov		r5,#0
 
-@	.loop_init
-@		ldr  	r3,[r0]
-@		mov		r1,r3		@ paso los primeros valores de que no tienen eco
-@		subs	r2,1		@ decremento para ver si termino el espacio sin eco
-@		bne		.loop_init
+	.loop_init10:
+		ldr  	r3,[r0],4	@ cargo en aux el valor de la lectura
+		str		r3,[r1]		@ paso los primeros valores de que no tienen eco
+		subs	r4,1		@ decremento para ver si termino el espacio sin eco
+		bne		.loop_init10
+		mov		r4,#1764	@ vuelvo a cargar para el desfasaje esta vez en catidad de bytes 2 bytes x 882datos
 
-@		mov		r2,441		@ vuelvo a cargar para el desfasaje
+		sub		r0,#1764	@ le resto al puntero la cantidad de bytes que se movió
+		sub		r2,#882		@ le resto a la long de salida los valores ya procesados.
 
-@	.loop_eco
-@		ldr		r3,[r0]		@ cargo el valor siguiente del vector
-@		shadd16	r3,r3,r4	@ sumo con SIMD con un registro en 0
-@		str		r3,[r0]
+	.loop_eco:
+		ldr		r3,[r0]		@ cargo el valor siguiente del vector en aux
+		shadd16	r3,r3,r5	@ sumo con halving con SIMD un registro en 0 para dividir
+		ldr		r6,[r0,r4]	@ leo el valor en r0+882 datos sin guardar el valor del puntero
+		add		r3,r3,r6	@ sumo el 1/2 del valor eco con el valor actual
+		str		r3,[r1,r4]	@ lo guardo en el vector de salida
+		subs	r2,#2		@ proceso de a dos valores
+		bne 	.loop_eco
 
-							@ tengo que comparar un indice para ver cuando termina el vector
-							@ aca me doy cuenta de que tengo que hacer otro vector de salida para que no se realimente el eco
-							@ tengo que pasar el vector de salida y se almacena en r1
+		pop     {r4-r6}		@ devuelvo el contexto
 
+		bx		lr

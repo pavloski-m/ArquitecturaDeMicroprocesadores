@@ -63,11 +63,144 @@ Este tipo de arreglo tiene muchos beneficios:
 6. Describa los diferentes modos de privilegio y operación del Cortex M, sus relaciones y como se conmuta de uno al otro. Describa un ejemplo en el que se pasa del modo
 privilegiado a no priviligiado y nuevamente a privilegiado.
 
+Los procesadores Cortex M3 y M4 tienen dos modos de operación, puede tener nivel de acceso privilegiado y no privilegiado. El nivel privilegiado puede acceder a todos los recursos del sistema, el nivel o privilegiado, tambien llamado estado de usuario no tiene acceso a ciertos lugares de memoria y algunas operaciones no pueden ser utilizadas.
+Modos de operación:
+Se ingresa al modo handler cuando se ejecuta una excepción como por ejemplo una interrupción. Este modo tiene nivel de acceso privilegiado.
+El modo Thread puede ser privilegiado o no privilegiado respecto del nivel de acceso que posee, se controla con un registro especial llamado CONTROL, este registro solo se puede modificar en modo privilegiado, por lo tanto, cuando estamos en modo no privilegiado solo se puede pasar al modo privilegiado mediante una excepción que llame al modo handler y desde ahí pasar al modo privilegiado si es necesario.
+Este modelo permite aplicaciones mas robustas, ya que el modo usuario no podría modificar zonas consideradas críticas.
+
+
+7. ¿Qué se entiende por modelo de registros ortogonal? Dé un ejemplo
+
+Esto significa que cualquier instrucción puede utilizar cualquier elemento de la arquitectura como fuente o como destino. Por ejemplo una operación de suma puede ser utilizada como fuente de los sumandos o como destino del mismo. Esto disminuye la cantidad de registros que se utilizan.
+
+
+8. ¿Qué ventajas presenta el uso de intrucciones de ejecución condicional (IT)? Dé un ejemplo
+
+La ejecución condicional permite ejecutar instrucciones solo si se cumple una condición. Estas condiciones son flags en el status register, por ejemplo el estado de negativo, cero, carry, overflow, etc.
+Una instrucción IT como subne solo se ejecuta si el bit de cero (Z) no está en 1.
+
+
+9. Describa brevemente las excepciones más prioritarias (reset, NMI, Hardfault).
+
+Las 3 excepciones mas priritarias son Reset, NMI y Hardfault.
+La excepción de reset es especial. Existen 3 tipos de reset, el Power on reset, el Syste reset y el Processor reset, cuando el procesador sale de un proceso de reset, ejecuta un handler de reset en modo Thread, en lugar de modo Handler como las otras excepciones.
+NMI es una interrupción no enmascarable. Se utiliza para avisar al procesador de que la tensión cayo por debajo de cierto nivel y también por overflow del watchdog.
+Hardfault se ejecuta cuando cualquier manejador de falla no puede ser activado  por estar desactivado o enmascarado.
+
+
+10. Describa las funciones principales de la pila. ¿Cómo resuelve la arquitectura el llamado
+a funciones y su retorno?
+La pila se utiliza para guardar el contexto de un hilo de ejecución, se guarda la dirección de la instrucción a la que se debe retornar, y los registros (algunos automaticamente r0-r3) para resguardar información que pudiera haberse modificado en el cambio de contexto.
+Para esto, la arquitectura tiene un Stack Pointer, que siempre esta apuntando a un valor del stack para poder leer la información que se guarda. Este puntero es de tipo LIFO.
+
+
+11. Describa la secuencia de reset del microprocesador.
+
+Luego de un reset y previo a que se empiece a ejecutar el programa, el procesador lee las dos primeras palabras en memoria. El principio del espacio de memoria tiene tabla vectorizada, por lo tanto en la posición 0x00000000 está el Main Stack Pointer (MSP) y luego el vector de reset 0x00000004, que es la dirección de memoria del Reset Handler. Luego el procesador escribe el Program Counter (PC) con estos valores.
+
+
+12. ¿Qué entiende por “core peripherals”? ¿Qué diferencia existe entre estos y el resto de
+los periféricos?
+Estos perifericos indispensables para el funcionamiento de la arquitectura y son comunes a los diferentes tipos de modelos de microcontroladores. A saber, estos son Nested Vectored Interrupt Controller(NVIC), System Control Block(SCB), System timer Clock (SysTick) y Memory Protection Unit (MPU). Se diferencia con otros periféricos en que estos son periféricos especificos del procesador y son provistos por ARM.
+
+
+13. ¿Cómo se implementan las prioridades de las interrupciones? Dé un ejemplo
+
+Las prioridades de la interrupciones se configuran en el registro NVIC. Las 3 primeras excepciones tienen prioridades fijas, son las más prioritarias. Estas son Reset, NMI y Hardfault. El resto de las excepciones tiene valor de prioridad configurable de 0 a 128. Menor valor es igual a mayor prioridad. La cantidad de valores la establece el fabricante dependiendo de la cantidad de bits que se otorgan para su configuración.
+por ejemplo con la instrucción: void NVIC_SetPriority (IRQn_Type IRQn, uint32_t priority) pondríamos en la variable priority el nivel de prioridad que queremos establecer para la interrupción IRQn.
+
+
+14. ¿Qué es el CMSIS? ¿Qué función cumple? ¿Quién lo provee? ¿Qué ventajas aporta?
+
+Es el estándar de interfaz de software del microcontrolador ARM, es una capa de abstracción de hardware  que es establecida por ARM para cada familia de microcontroladores, es independiente del proveedor de la serie de procesadores Cortex-M. Esto permite acelerar el proceso aprendizaje ante una migración de microcontrolador. Además permite tener una bibliografía genérica.
+
+
+15. Cuando ocurre una interrupción, asumiendo que está habilitada ¿Cómo opera el microprocesador para atender a la subrutina correspondiente? Explique con un ejemplo
+
+Una interrupción se ejecuta solo si el nivel de prioridad de esta es superior al nivel de prioridad del hilo que se está ejecutando. Si es así pasa a ejecutarse el handler de esta interrupción, previamente habiendo salvado el contexto (PC, registros, status, etc.), luego de la ejecución de retorno, se recupera el contexto y continúa en la instrucción siguiente a la que estaba ejecutando cuando fue interrumpido.
+
+
+16. Explique las características avanzadas de atención a interrupciones: tail chaining y late
+arrival.
+
+Tail chaining: Esto es como una cola de excepciones, cuando salta una excepción y otra de mayor prioridad se estaba ejecutando, la excepción nueva se agrega a la cola y se ejecuta inmediatamente luego de la de mayor prioridad. No se regresa al contexto que se estaba ejecutando cuando fue llamado la interrupción de mayor prioridad.
+
+Late arrival: Si durante la ejecución de una excepción se llama a otra excepción de mayor prioridad
+El push de la pila se hará, pero la recuperación de vetores se hará para la excepción de late arival, esto garantiza que la interrupción con mayor prioridad sea atendida primero, y el resultado es el desperdicio de algunos ciclos en la busqueda del vector original del stacking previo. 
+
+
+17.1 ¿Cómo cambia la operación de stacking al utilizar la unidad de punto flotante?
+
+El stacking demora 12 pulsos de reloj, si tenemos la FPU habilitada el microcontrolador guarda los registros de la FPU y el stacking se hace más lento. se agregan los registros S0 a S15 y FPSCR de la FPU
+
+
+17.2 ¿Qué es el systick? ¿Por qué puede afirmarse que su implementación favorece la portabilidad de los sistemas operativos embebidos?
+
+El systick es un timer descendente de 24 bits incorporado a los cortex M. Permite facilitar la tarea de temporización de las aplicaciones, ya que otorga referencia al poder configurarse la interrupción SysTick facilmente. Su implementación favorece la portabilidad ya que en el caso de que el microprocesador lo soporte, su implementación es igual y su comportamiento también.
+
+
+18. ¿Qué funciones cumple la unidad de protección de memoria (MPU)?
+
+La MPU de un dispositivo programable que se puede utilizar para definir permisos de acceso a la memoria (por ejemplo, acceso privilegiado o acceso completo) y atributos de memoria (por ejemplo, almacenable en búfer, almacenable en caché) para diferentes regiones.
+
+
+19. ¿Cuántas regiones pueden configurarse como máximo? ¿Qué ocurre en caso de haber solapamientos de las regiones? ¿Qué ocurre con las zonas de memoria no cubiertas por las regiones definidas?
+
+Se pueden configurar 2 zonas de 4 regiones como máximo y una región de background (solo acceso privilegiado). En caso de solapamiento los atributos de acceso los tendrá la región de mayor numeración.
+Si se intenta acceder a una región de memoria no definida se ejecutará un fault handler.
 
 
 
+20. ¿Para qué se suele utilizar la excepción PendSV? ¿Cómo se relaciona su uso con el resto de las excepciones? Dé un ejemplo
+
+La excepción PendSV es utilizada por el sistema operativo durante un cambio de contexto. En el cambio de contexto se setea el pending status y lleva a cabo el cambio de contexto dentro de PendSV. Esto permite que se puedan procesar todas las excepciones previamente ya que es la excepción con menor prioridad (128). 
+
+
+21. ¿Para qué se suele utilizar la excepción SVC? Expliquelo dentro de un marco de un sistema operativo embebido.
+
+Es la excepcion SuperVisor Call, se usa para generar llamadas a funciones de sistema. Por ejemplo si la aplicación está corriendo en modo no privilegiado y se necesita acceder a memoria solo accesible por el modo privilegiado, llamando a una excepción se puede acceder a estas regiones a traves del handler de excepción y el control lo sigue teniendo el SO en lugar de la aplicación.
+
+
+ISA
+
+1. ¿Qué son los sufijos y para qué se los utiliza? Dé un ejemplo
+
+Los sufijos son extensiones que se agregan al final de los mnemónicos que permiten una ejecución condicional. Antes de ejecutar el comando se corrobora el flag que indica ese sufijo, si está seteado se ejecuta y si no no.
+Por ejemplo si tenemos un instrucción de salto B con el sufijo NE (BNE), el salto solo se ejecutará si el bit de status Z está en 1.
 
 
 
+2. ¿Para qué se utiliza el sufijo ‘s’? Dé un ejemplo
+
+Cuando se agrega a ciertos mnemónicos el sufijo 's' se indica que esta intrucción debe actualizar el SFR. Por ejemplo en una resta de 2 valores iguales, el bit Z se pondrá en 1 sólo si la instucción SUB tiene el sufijo 's', es decir SUBS   valor1, valor2. Si valor1=valor2 -> z=1.
 
 
+3. ¿Qué utilidad tiene la implementación de instrucciones de aritmética saturada? Dé un ejemplo con operaciones con datos de 8 bits.
+
+Estas instrucciones permiten trabajar con las variables similar a lo que son las señales analógicas, ya que al intentar aumentar el valor máximo de una variable el valor no se incrementará. En cambio con las otras instrucciones se produce un overflow.
+
+Si queremos saturar el registro R5 en valor 7 y almacenarla en R0, luego de una operación podríamos usar la instrucción  USAT  r0, #7, r5
+
+
+4. Describa brevemente la interfaz entre assembler y C ¿Cómo se reciben los argumentos de las funciones? ¿Cómo se devuelve el resultado? ¿Qué registros deben guardarse en la pila antes de ser modificados?
+
+El calling convention establece una relación entre los registros del código de assembler y los parametros de las funciones.
+Llamado:
+R0 -> parametro 1
+R1 -> parametro 2
+R2 -> parametro 3
+R3 -> parametro 4
+
+Vuelta:
+R0 -> Return 1ros 32 bits
+R1 -> Si se retorna una variable de 64
+
+Esto se hace automáticamente. El resto de los registros deben ser resguardados en la pila de manera manual.
+
+
+5. ¿Qué es una instrucción SIMD? ¿En qué se aplican y que ventajas reporta su uso? Dé un ejemplo.
+
+Las siglas de SIMD proviene de Single Instruction-Multiple Data. Procesa datos multiples en una sola instrucción.
+Por ejemplo en una suma de dos valores de 32 bits se pueden realizar 2 sumas de 16 o 4 de 8bits. Esto permite hacer el código mas compacto y veloz.
+Esta particularidad se empieza a explotar cuando se comienzan a utilizar datos concatenados, en donde tenemos los datos en direcciones de memoria contigua.

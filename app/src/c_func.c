@@ -102,7 +102,7 @@ void c_eco (int16_t * vectorIn, int16_t * vectorOut, uint32_t longitud){
 		vectorOut[i] = vectorIn[i];
 	}
 
-	for (uint32_t i = 882; i<longitud-1; i++){
+	for (uint32_t i = 882; i<(longitud-1); i++){
 		vectorOut[i] = vectorIn[i-desfasaje]/2 + vectorIn[i];
 	}
 }

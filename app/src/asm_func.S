@@ -301,20 +301,20 @@
 
 	.loop_init10:
 		ldr  	r3,[r0],4	@ cargo en aux el valor de la lectura
-		str		r3,[r1]		@ paso los primeros valores de que no tienen eco
+		str		r3,[r1],4		@ paso los primeros valores de que no tienen eco
 		subs	r4,1		@ decremento para ver si termino el espacio sin eco
 		bne		.loop_init10
-		mov		r4,#1764	@ vuelvo a cargar para el desfasaje esta vez en catidad de bytes 2 bytes x 882datos
 
+		mov		r4,#1760	@ vuelvo a cargar para el desfasaje esta vez en catidad de bytes 2 bytes x 882datos
 		sub		r0,#1764	@ le resto al puntero la cantidad de bytes que se movió
 		sub		r2,#882		@ le resto a la long de salida los valores ya procesados.
 
 	.loop_eco:
-		ldr		r3,[r0]		@ cargo el valor siguiente del vector en aux
+		ldr		r3,[r0],4	@ cargo el valor siguiente del vector en aux
 		shadd16	r3,r3,r5	@ sumo con halving con SIMD un registro en 0 para dividir
 		ldr		r6,[r0,r4]	@ leo el valor en r0+882 datos sin guardar el valor del puntero
-		add		r3,r3,r6	@ sumo el 1/2 del valor eco con el valor actual
-		str		r3,[r1,r4]	@ lo guardo en el vector de salida
+		sadd16	r3,r3,r6	@ sumo el 1/2 del valor eco con el valor actual
+		str		r3,[r1],4	@ lo guardo en el vector de salida
 		subs	r2,#2		@ proceso de a dos valores
 		bne 	.loop_eco
 

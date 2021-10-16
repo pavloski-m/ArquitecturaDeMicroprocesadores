@@ -221,11 +221,13 @@ static void eco (void){
 			vectorInEj10[i] = i%20;
 		}
 
-	int16_t vectorOutEj10 [1000] = {0};
+	int16_t vectorOutEj10_c [4096] = {0};
+	int16_t vectorOutEj10_asm [4096] = {0};
 
-	c_eco (vectorInEj10, vectorOutEj10, LARGO_MUESTRAS);
 
-	asm_eco_SIMD (vectorInEj10, vectorOutEj10, LARGO_MUESTRAS);
+	c_eco (vectorInEj10, vectorOutEj10_c, LARGO_MUESTRAS);
+
+	asm_eco_SIMD (vectorInEj10, vectorOutEj10_asm, LARGO_MUESTRAS);
 
 }
 
